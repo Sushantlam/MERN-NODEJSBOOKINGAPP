@@ -27,9 +27,10 @@ async function updateHOtel(req, res) {
 }
 
 const getAllHotel = async (req, res, next) => {
-    const { min , max  } = req.query;
+    const { min , max, ...others} = req.query;
+    console.log({others, min , max});
     try {
-        const Hotels = await hotels.find({featured: req.query.featured, price: { $gt: min | 1, $lt: max || 999 },}).limit(req.query.limit);
+        const Hotels = await hotels.find({featured: req.query.featured, price: { $gt : min |1, $lt: max ||9999}}).limit(req.query.limit);
         res.status(200).json(Hotels);
     } catch (err) {
         next(err);
@@ -44,6 +45,20 @@ async function getCityByCount(req, res, next) {
         }))
 
         return res.status(201).json(list)
+
+    } catch (error) {
+        res.status(402).json("Bad request")
+    }
+}
+
+async function getCity(req, res, next) {
+    const { min , max, ...others} = req.query;
+    console.log({others, min , max});
+    
+    try {
+        const cities = await hotels.find({city: req.query.cities, price: { $gt : min |1, $lt: max ||9999}}).limit(req.query.limit)
+        console.log(cities);
+        return res.status(201).json(cities)
 
     } catch (error) {
         res.status(402).json("Bad request")
@@ -77,4 +92,4 @@ async function getByType(req, res, next) {
 
 
 
-module.exports = { createHotel, updateHOtel, getAllHotel, getCityByCount, getByType }
+module.exports = { createHotel, updateHOtel, getAllHotel, getCityByCount, getByType, getCity }
